@@ -15,7 +15,7 @@ class block:
         self.pos = position
         self.color = color
 
-    def changePos(self, position):
+    def setPos(self, position):
         self.pos = position
 
     def getPos(self):
@@ -27,11 +27,14 @@ class block:
     def getYPos(self):
         return self.pos[1]
 
+    def getColor(self):
+        return self.color
+
     def draw(self, win):
         global blockSize
         x = self.pos[0]
         y = self.pos[1]
-        pygame.draw.rect(win, self.color, (x, y, blockSize, blockSize))
+        pygame.draw.rect(win, self.color, [x, y, blockSize, blockSize])
 
 
 class food:
@@ -43,32 +46,36 @@ class food:
         temp = 1
 
 
-
 class snake:
-
     snakeList = []
 
     def __init__(self, x, y, size, color):
         self.size = size
         for i in range(size):
-            self.snakeList.append(block((x - i * 10, y) , color))
-
+            self.snakeList.append(block((x - i * 10, y), color))
 
     def addBodyPart(self, x, y, color):
         pass
 
     def move(self, direction):
-        headBlock = self.snakeList[self.size - 1]
-        for i in reversed(self.snakeList):
-            if i == headBlock:
-                self.updateHead(i, direction)
+        # headBlock = self.snakeList[0]
+        direct = direction
+        newList = []
+        for i in range(len(self.snakeList) - 1, 0, -1):
+            self.snakeList[i].setPos(self.snakeList[i - 1].getPos())
+            print(self.snakeList[i].getPos())
 
+        newX = self.snakeList[0].getXPos() + direction[0] * blockSize
+        newY = self.snakeList[0].getYPos() + direction[1] * blockSize
+        self.snakeList[0].setPos((newX, newY))
+        print(self.snakeList[0].getPos())
 
 
     def updateHead(self, bl, direction):
         newX = bl.getXPos() + direction[0] * blockSize
         newY = bl.getYPos() + direction[1] * blockSize
-        bl.changePos((newX, newY))
+        bl.setPos((newX, newY))
+
 
 # Things I need:
 # create new food
@@ -106,21 +113,22 @@ def main():
     screen = pygame.display.set_mode((width, height))
     b = block((20, 20), color=(0, 255, 0))
     f = food(40, 40, color=(255, 255, 0))
-    tmpSize = 1
+    tmpSize = 5
     s = snake(120, 120, tmpSize, color=(100, 100, 100))
 
     while gameInProgress:
-        clock.tick(50)
+        screen.fill(color=((60, 160, 220)))
+        clock.tick(5)
         inputKey()
-        b.draw(screen)
-        f.unit.draw(screen)
-        #print(f.unit.getXPos())
-        #print(s.snakeList[0].getPos())
+        #b.draw(screen)
+        #f.unit.draw(screen)
+        print("MOVE")
         s.move(movement)
         for bodyPart in s.snakeList:
             bodyPart.draw(screen)
-            #print(bodyPart.getPos())
+
         pygame.display.update()
-        gameInProgress = False
+        #gameInProgress = False
+
 
 main()
