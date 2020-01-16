@@ -117,7 +117,7 @@ def foodSnakeCollision(tmpSnake, tmpFood):
             # print("COLLIDE!")
             tmpFood.foodList.remove(foodPiece)
             print(tmpFood.foodList)
-            
+            tmpFood.newRandFood(tmpSnake, color=(200, 200, 200))
 
 
 # Things I need:
