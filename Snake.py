@@ -88,15 +88,24 @@ class snake:
         self.size += 1
 
     def move(self, direction):
-        # headBlock = self.snakeList[0]
+        #global width, height
         direct = direction
         newList = []
         for i in range(len(self.snakeList) - 1, 0, -1):
             self.snakeList[i].setPos(self.snakeList[i - 1].getPos())
-            #print(self.snakeList[i].getPos())
 
         newX = self.snakeList[0].getXPos() + direction[0] * blockSize
         newY = self.snakeList[0].getYPos() + direction[1] * blockSize
+        if newX == -10:
+            newX = width - 10
+        elif newX == width:
+            newX = 0
+
+        if newY == -10:
+            newY = height - 10
+        elif newY == height:
+            newY = 0
+
         self.snakeList[0].setPos((newX, newY))
 
     def getHeadXPos(self):
@@ -156,7 +165,7 @@ def main():
     clock = pygame.time.Clock()
     gameInProgress = True
     screen = pygame.display.set_mode((width, height))
-    tmpSize = 5
+    tmpSize = 8
     s = snake(120, 120, tmpSize, color=(200, 50, 200))
     numFood = 2
     f = food(numFood)
