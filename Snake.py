@@ -73,11 +73,6 @@ class food:
 
 
 
-
-    def foodEat(self):
-        tmp = 1
-
-
 class snake:
     snakeList = []
 
@@ -95,18 +90,34 @@ class snake:
         newList = []
         for i in range(len(self.snakeList) - 1, 0, -1):
             self.snakeList[i].setPos(self.snakeList[i - 1].getPos())
-            print(self.snakeList[i].getPos())
+            #print(self.snakeList[i].getPos())
 
         newX = self.snakeList[0].getXPos() + direction[0] * blockSize
         newY = self.snakeList[0].getYPos() + direction[1] * blockSize
         self.snakeList[0].setPos((newX, newY))
-        print(self.snakeList[0].getPos())
+        #print(self.snakeList[0].getPos())
 
 
     def updateHead(self, bl, direction):
         newX = bl.getXPos() + direction[0] * blockSize
         newY = bl.getYPos() + direction[1] * blockSize
         bl.setPos((newX, newY))
+
+    def getHeadXPos(self):
+        return self.snakeList[0].getXPos()
+
+    def getHeadYPos(self):
+        return self.snakeList[0].getYPos()
+
+
+
+def foodSnakeCollision(tmpSnake, tmpFood):
+    for foodPiece in tmpFood.foodList:
+        if tmpSnake.getHeadXPos() == foodPiece.getXPos() and tmpSnake.getHeadYPos() == foodPiece.getYPos():
+            # print("COLLIDE!")
+            tmpFood.foodList.remove(foodPiece)
+            print(tmpFood.foodList)
+            
 
 
 # Things I need:
@@ -127,12 +138,16 @@ def inputKey():
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and movement != (1, 0):
                 movement = (-1, 0)
+                break
             elif event.key == pygame.K_RIGHT and movement != (-1, 0):
                 movement = (1, 0)
+                break
             elif event.key == pygame.K_UP and movement != (0, 1):
                 movement = (0, -1)
+                break
             elif event.key == pygame.K_DOWN and movement != (0, -1):
                 movement = (0, 1)
+                break
 
 
 def main():
@@ -155,6 +170,7 @@ def main():
         clock.tick(15)
         inputKey()
         s.move(movement)
+        foodSnakeCollision(s, f)
         for bodyPart in s.snakeList:
             bodyPart.draw(screen)
 
