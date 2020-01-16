@@ -10,7 +10,7 @@ blockSize = 10
 
 width = 400
 height = 400
-
+gameInProgress = True
 
 class block:
 
@@ -69,7 +69,6 @@ class food:
                     tmp = True
                     break
 
-
         self.foodList.append(block((x, y), color))
 
 
@@ -99,13 +98,6 @@ class snake:
         newX = self.snakeList[0].getXPos() + direction[0] * blockSize
         newY = self.snakeList[0].getYPos() + direction[1] * blockSize
         self.snakeList[0].setPos((newX, newY))
-        #print(self.snakeList[0].getPos())
-
-
-    def updateHead(self, bl, direction):
-        newX = bl.getXPos() + direction[0] * blockSize
-        newY = bl.getYPos() + direction[1] * blockSize
-        bl.setPos((newX, newY))
 
     def getHeadXPos(self):
         return self.snakeList[0].getXPos()
@@ -113,26 +105,27 @@ class snake:
     def getHeadYPos(self):
         return self.snakeList[0].getYPos()
 
+    def getPosAtIndex(self, index):
+        return self.snakeList[index].getXPos(), self.snakeList[index].getYPos()
+
+    def selfCollision(self):
+        global gameInProgress
+        head = (self.getHeadXPos(), self.getHeadYPos())
+        for i in range(1, len(self.snakeList) - 1):
+            if head == self.getPosAtIndex(i):
+                gameInProgress = False
+                break;
+
 
 
 def foodSnakeCollision(tmpSnake, tmpFood):
     for foodPiece in tmpFood.foodList:
         if tmpSnake.getHeadXPos() == foodPiece.getXPos() and tmpSnake.getHeadYPos() == foodPiece.getYPos():
-            # print("COLLIDE!")
             tmpFood.foodList.remove(foodPiece)
-            # print(tmpFood.foodList)
             tmpSnake.addBodyPart(color=(200, 50, 200))
             tmpFood.newRandFood(tmpSnake, color=(200, 200, 200))
 
 
-# Things I need:
-# create new food
-# check for food collision
-# check for snake - self collision
-# check for key being input
-
-# Snake obj:
-# needs
 
 def inputKey():
     global movement, gameInProgress
@@ -183,7 +176,9 @@ def main():
             foodPiece.draw(screen)
 
         pygame.display.update()
-        #gameInProgress = False
+        s.selfCollision()
+
+    pygame.quit()
 
 
 main()
