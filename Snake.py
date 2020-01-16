@@ -55,9 +55,9 @@ class food:
 
     def newRandFood(self, tmpSnake, color):
         tmp = True
-        x = random.randrange(0, width, 10)
-        y = random.randrange(0, height, 10)
         while tmp:
+            x = random.randrange(0, width, 10)
+            y = random.randrange(0, height, 10)
             tmp = False
             for i in tmpSnake.snakeList:
                 if i.getXPos == x and i.getYPos == y:
@@ -68,6 +68,7 @@ class food:
                 if i.getXPos == x and i.getYPos == y:
                     tmp = True
                     break
+
 
         self.foodList.append(block((x, y), color))
 
@@ -81,8 +82,11 @@ class snake:
         for i in range(size):
             self.snakeList.append(block((x - i * 10, y), color))
 
-    def addBodyPart(self, x, y, color):
-        pass
+    def addBodyPart(self, color):
+        newX = self.snakeList[self.size - 1].getXPos()
+        newY = self.snakeList[self.size - 1].getYPos()
+        self.snakeList.append(block((newX, newY), color))
+        self.size += 1
 
     def move(self, direction):
         # headBlock = self.snakeList[0]
@@ -116,7 +120,8 @@ def foodSnakeCollision(tmpSnake, tmpFood):
         if tmpSnake.getHeadXPos() == foodPiece.getXPos() and tmpSnake.getHeadYPos() == foodPiece.getYPos():
             # print("COLLIDE!")
             tmpFood.foodList.remove(foodPiece)
-            print(tmpFood.foodList)
+            # print(tmpFood.foodList)
+            tmpSnake.addBodyPart(color=(200, 50, 200))
             tmpFood.newRandFood(tmpSnake, color=(200, 200, 200))
 
 
