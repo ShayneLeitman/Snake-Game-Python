@@ -8,6 +8,9 @@ movement = (1, 0)
 
 blockSize = 10
 
+width = 400
+height = 400
+
 
 class block:
 
@@ -30,6 +33,9 @@ class block:
     def getColor(self):
         return self.color
 
+    def setColor(self, color):
+        self.color = color
+
     def draw(self, win):
         global blockSize
         x = self.pos[0]
@@ -38,12 +44,38 @@ class block:
 
 
 class food:
+    foodList = []
 
-    def __init__(self, x, y, color):
-        self.unit = block((x, y), color)
+    def __init__(self, size):
+        self.size = size
 
-    def newFood(self, curFoodList, snake):
-        temp = 1
+    def startCreateFood(self, tmpSnake, color):
+        for i in range(self.size):
+            self.newRandFood(tmpSnake, color)
+
+    def newRandFood(self, tmpSnake, color):
+        tmp = True
+        x = random.randrange(0, width, 10)
+        y = random.randrange(0, height, 10)
+        while tmp:
+            tmp = False
+            for i in tmpSnake.snakeList:
+                if i.getXPos == x and i.getYPos == y:
+                    tmp = True
+                    break
+
+            for n in self.foodList:
+                if i.getXPos == x and i.getYPos == y:
+                    tmp = True
+                    break
+
+        self.foodList.append(block((x, y), color))
+
+
+
+
+    def foodEat(self):
+        tmp = 1
 
 
 class snake:
@@ -93,39 +125,41 @@ def inputKey():
             gameInProgress = False
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and movement != (1, 0):
                 movement = (-1, 0)
-            elif event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_RIGHT and movement != (-1, 0):
                 movement = (1, 0)
-            elif event.key == pygame.K_UP:
+            elif event.key == pygame.K_UP and movement != (0, 1):
                 movement = (0, -1)
-            elif event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN and movement != (0, -1):
                 movement = (0, 1)
 
 
 def main():
     global width, height, movement, gameInProgress, b, numFood
-    width = 400
-    height = 400
+    # width = 400
+    # height = 400
     movement = (1, 0)
     clock = pygame.time.Clock()
     gameInProgress = True
     screen = pygame.display.set_mode((width, height))
-    b = block((20, 20), color=(0, 255, 0))
-    f = food(40, 40, color=(255, 255, 0))
     tmpSize = 5
-    s = snake(120, 120, tmpSize, color=(100, 100, 100))
+    s = snake(120, 120, tmpSize, color=(200, 50, 200))
+    numFood = 2
+    f = food(numFood)
+    f.startCreateFood(s, color=(200, 200, 200))
+
 
     while gameInProgress:
         screen.fill(color=((60, 160, 220)))
-        clock.tick(5)
+        clock.tick(15)
         inputKey()
-        #b.draw(screen)
-        #f.unit.draw(screen)
-        print("MOVE")
         s.move(movement)
         for bodyPart in s.snakeList:
             bodyPart.draw(screen)
+
+        for foodPiece in f.foodList:
+            foodPiece.draw(screen)
 
         pygame.display.update()
         #gameInProgress = False
