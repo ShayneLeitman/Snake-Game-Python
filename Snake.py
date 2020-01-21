@@ -11,6 +11,34 @@ blockSize = 10
 width = 400
 height = 400
 gameInProgress = True
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((width, height))
+
+class button:
+
+    def __init__(self, x, y, w, h, color, text=''):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.color = color
+        self.text = text
+
+    def mouseIsOverButton(self, pos):
+        if self.x < pos[0] < (self.x + self.w):
+            if self.y < self.y < pos[1] < (self.y + self.h):
+                return True
+
+        return False
+
+    def draw(self, win):
+        pygame.draw.rect(win, self.color, [self.x, self.y, self.w, self.h])
+
+        if self.text != "":
+            font = pygame.font.Font(None, 40)
+            text = font.render(self.text, (0, 0, 0))
+            
+
 
 class block:
 
@@ -157,14 +185,26 @@ def inputKey():
                 break
 
 
+
+
+
+def startMenu():
+    start_menu = True
+
+    while start_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        screen.fill(color=(255, 255, 255))
+        pygame.display.update()
+
+
 def main():
+    #actual game of snake!
     global width, height, movement, gameInProgress, b, numFood
-    # width = 400
-    # height = 400
     movement = (1, 0)
-    clock = pygame.time.Clock()
     gameInProgress = True
-    screen = pygame.display.set_mode((width, height))
     tmpSize = 8
     s = snake(120, 120, tmpSize, color=(200, 50, 200))
     numFood = 2
@@ -173,7 +213,7 @@ def main():
 
 
     while gameInProgress:
-        screen.fill(color=((60, 160, 220)))
+        screen.fill(color=(60, 160, 220))
         clock.tick(15)
         inputKey()
         s.move(movement)
@@ -190,4 +230,4 @@ def main():
     pygame.quit()
 
 
-main()
+startMenu()
